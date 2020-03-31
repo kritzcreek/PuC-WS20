@@ -1,0 +1,118 @@
+* Herzlich Willkommen!
+* Vorstellungsrunde
+
+** Wer bin ich?
+
+Christoph Hegemann (christoph.hegemann@th-koeln.de)
+
+Professioneller Compiler Entwickler
+Open Source Contributor
+Konferenz Speaker
+Seit neuestem Dozent fuer PuC
+
+** Wer seid ihr?
+
+1. Vorstellung
+2. Erwartungen an den Kurs
+3. Erfahrungen mit Funktionaler Programmierung?
+4. Welche Programmiersprachen kennt/moegt ihr?
+
+** Unser Umgang
+
+Wir gehen respektvoll und umsichtig miteinander um. Niemand muss Angst haben
+eine Frage zu stellen. Es gibt keine dummen Fragen.
+
+Wenn etwas unklar ist bitte ich um direkte Nachfrage, unterbrecht mich! Falls
+eine zu grosse Teilnehmerzahl dies unmoeglich macht, werden wir einen Moderator
+bestimmen, der Fragen sammelt und zu einem geeigneten Zeitpunkt an mich weitergibt.
+
+Es ist auch immer moeglich mir eine E-Mail an christoph.hegemann@th-koeln.de zu
+schicken.
+
+* Organisatorisches
+
+** Vorlesungsformat
+
+Die Vorlesung wird drei wesentliche Medien verwenden:
+
+1. Whiteboarding
+    Ich werde via Screensharing ein Whiteboard mit euch teilen und unser naechstes Thema
+    einfuehren und besprechen. Anschliessend ...
+
+2. Livecoding
+    ... arbeiten wir *gemeinsam* an unserem Compiler, wobei ich tippen werde.
+    Wir implementieren dabei die zuvor erarbeiteten Konzepte.
+
+3. Diskussion
+    Wann immer Fragen auftreten, oder ich merke, dass wir zu grosse thematische Spruenge
+    machen, werde ich pausieren und zuvor erarbeitete Konzepte miteinander in Verbindung bringen.
+    Manchmal werden wir hierbei das Whiteboard benutzen, oftmals werde ich nur reden.
+
+4. Slides
+    So wenig wie moeglich (Ausser in der Einfuehrungsveranstaltung)
+
+** Ilias und Github
+
+Die Slides, Whiteboard Notizen und aller Code wird auf Github
+veroeffentlicht. Das Repository befindet sich hier:
+
+https://github.com/kritzcreek/PuC-WS20
+
+Ueber das Ilias werden wichtige Nachrichten fuer die Kursteilnehmer
+verbreitet, achten Sie auf ihre E-Mails!
+** Abschlussprojekt
+
+Etwa in der Mitte des Semesters werden wir fuer jeden Studenten Projekte festlegen.
+Diese werden in Gruppen von maximal zwei Studentinnen/en bearbeitet. Bei einer
+ungeraden Anzahl von Teilnehmern kann es eine Dreiergruppe geben.
+
+Ich werde einige Themen vorschlagen, oder von Studenten vorgeschlagene Themen
+abgesegnen.
+
+Am Semesterende wird dann jede Gruppe ihr Projekt in einer Praesentation vorstellen
+die auf jeden Fall(!) eine Demonstration beinhalten wird.
+
+Zeitrahmen:
+ca. 15min Vortrag
+10min Demo und Fragen
+
+** Zeit und "Ort"
+
+Nach der aktuellen Lage halte ich es fuer sehr wahrscheinlich,
+dass die gesamte Veranstaltung Remote stattfinden wird.
+
+Mittwoch 11Uhr? 2/3 Stunden?
+
+** Vorraussetzungen und Resourcen
+
+Wir werden Kotlin benutzen, ich empfehle die "Kotlin Koans" als kurze Einfuehrung:
+
+https://play.kotlinlang.org/koans/overview
+
+Buecher und Paper mit relevantem Hintergrund und mehr Details und Theorie werde ich
+immer dann verlinken wenn wir das entsprechende Thema besprechen.
+
+** Fragen zum Organisatorischen
+
+Was habe ich vergessen?
+
+* Was verstehen wir unter Compilern
+
+** Programme fuer Programme
+
+Es gibt Programme die als ihren Input andere Programme akzeptieren.
+
+Ein Compiler ist ein solches Programm. Programme koennen andere Programme...
+
+1. ... analysieren (Type checking, linting)
+2. ... in andere Programme transformieren (In Maschinencode uebersetzen, automatisierte Refactorings)
+3. ... ausfuehren oder simulieren (Interpretation, Symbolische Evaluierung)
+
+Programme operieren auf Datenstrukturen.
+
+Wenn wir also einen Compiler schreiben wollen, muessen wir einen Weg finden Programme als
+Datenstruktur zu repraesentieren.
+
+** Unsere erste Programmiersprache
+
+=> Whiteboard
