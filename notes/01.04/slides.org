@@ -53,13 +53,13 @@ Die Vorlesung wird drei wesentliche Medien verwenden:
 
 ** Ilias und Github
 
-Die Slides, Whiteboard Notizen und aller Code wird auf Github
-veroeffentlicht. Das Repository befindet sich hier:
+ Die Slides, Whiteboard Notizen und aller Code wird auf Github
+ veroeffentlicht. Das Repository befindet sich hier:
 
-https://github.com/kritzcreek/PuC-WS20
+ https://github.com/kritzcreek/PuC-WS20
 
-Ueber das Ilias werden wichtige Nachrichten fuer die Kursteilnehmer
-verbreitet, achten Sie auf ihre E-Mails!
+ Ueber das Ilias werden wichtige Nachrichten fuer die Kursteilnehmer
+ verbreitet, achten Sie auf ihre E-Mails!
 ** Abschlussprojekt
 
 Etwa in der Mitte des Semesters werden wir fuer jeden Studenten Projekte festlegen.
@@ -81,7 +81,7 @@ ca. 15min Vortrag
 Nach der aktuellen Lage halte ich es fuer sehr wahrscheinlich,
 dass die gesamte Veranstaltung Remote stattfinden wird.
 
-Mittwoch 11Uhr? 2/3 Stunden?
+Mittwoch 11Uhr! 2/3 Stunden?
 
 ** Vorraussetzungen und Resourcen
 
@@ -96,6 +96,11 @@ immer dann verlinken wenn wir das entsprechende Thema besprechen.
 
 Was habe ich vergessen?
 
+- Anmeldung:
+  Bis zur naechsten Vorlesung eine Mail an christoph.hegemann@th-koeln.de
+
+- Niemand faellt durch:
+  Durch Projekt wird benotet, kann aber abgebrochen werden
 * Was verstehen wir unter Compilern
 
 ** Programme fuer Programme
