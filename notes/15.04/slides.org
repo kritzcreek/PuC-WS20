@@ -1,0 +1,63 @@
+* Herzlich Willkommen zur zweiten PuC Vorlesung
+
+** Organisatorisches
+
+Memo an mich selbst: An das Recording denken
+
+Wir sind bei 23 Anmeldungen (verrueckt!)
+
+Falls jemand in der Vorlesung sitzt der mir noch keine E-Mail
+geschrieben hat, tut sie/er das bitte bis zur naechsten Vorlesung
+
+Video + Audio
+
+** Fragen?
+
+Gibt es zum Organisatorischem noch Fragen? Auch im Bezug auf letzte
+Vorlesung.
+
+* Wiederholung + Uebung
+
+** Wiederholung
+
+Abstrakte Syntax
+
+Programme als Bäume
+
+Bäume als rekursive Datenstrukturen
+
+Reduktion von Bäumen mit Rekursion
+
+Tree-rewrites - Bäume in andere Bäume überführen
+
+** Übungen
+
+1. Potenzieren
+2. Subtraktion
+3. Subtraktion nach Addition umschreiben
+
+* Unsere erste /echte/ Programmiersprache
+
+Wir werden eine /funktionale/ Programmiersprache kompilieren
+
+Unsere erste Frage muss also sein... Was verstehen wir unter einer Funktion?
+
+** Was ist eine Funktion?
+
+- Variablen
+- Bindings und Scopes
+- Alpha-Equivalence
+
+** Das Lambda Kalkül
+
+- Funktionsapplikation
+- Substitution/Ersetzung
+- First-Order -> Higher-Order
+- Evaluation durch Beta-Reduktion
+- Divergente Ausdruecke
+- Moegliches Projekt: Namenlose Repraesentation des LC
+
+** Closures
+
+- Environments
+- Evaluation mit Closures
