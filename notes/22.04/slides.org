@@ -1,0 +1,92 @@
+* Herzlich Willkommen
+
+Bitte Kameras benutzen, Lasst uns aus der Remote Situation das Beste machen.
+
+Haben wir Neulinge? (Erklaeren wo Repository und Aufnahmen zu finden sind)
+
+Aufnahme starten
+
+* Wiederholung
+
+Was haben wir in der letzten Vorlesung gelernt?
+
+** Was verstehen wir unter Funktion?
+
+Eine Funktion besteht aus einem _Binder_ und einem _Body_:
+
+λx   -> x + 1
+ ^      ^^^^^
+Binder   Body
+
+Eine Funktion ist ein First-Class-Value. Das heisst Funktionen koennen Argumente
+und Rueckgabewerte von anderen Funktionen sein.
+
+** Der Lambda Calculus
+
+Der Lambda Calculus ist ein urspruenglich rein mathematisches System. John McCarthy
+basierte 1950 die Grundlagen der ersten LISPs auf dem LC.
+
+Der Lambda Calculus ist eine Turing-vollstaendige Programmiersprache
+(bewiesen durch Turing selbst).
+
+Der Lambda Calculus ist eine _funktionale_ Programmiersprache, und bildet die Basis
+fuer unsere eigene Programmiersprache.
+
+** Alpha-Äquivalenz
+
+Zwei Lambda Ausdruecke sind äquivalent, wenn sie sich lediglich durch die Namen
+von gebundenen Variablen unterscheiden:
+
+λx -> x ⇔ λy -> y
+
+λx -> y /= λy -> y
+
+** Evaluation durch Beta-Reduktion
+
+Die Anwendung von Funktionen im Lambda Calculus bezeichnet man auch als Beta-Reduktion.
+
+Wir wenden eine Funktion auf ein Argument an, indem wir alle Vorkommnisse der durch die
+Funktion gebundenen Variable im ihrem Body durch das Argument ersetzen.
+
+   (λx -> x + 1) 20
+⇔ [x → 20] x + 1
+⇔ 20 + 1
+
+* Alternative Methode zur Evaluation
+
+** Nachteile von Beta-Reduktion
+
+- Name-Capture kompliziert den Algorithmus deutlich
+
+   (λx -> (λy -> x + y)) y
+⇔ λy -> y y <= ERROR
+
+- Wir mussten einen /Plus/ Knoten in unsere Sprache aufnehmen um ueber
+  Addition sprechen zu koennen. Aber wir wollen Addition als gewoehnliche
+  Funktion formulieren.
+
+- Performance! Wir traversieren unsere Baeume immer und immer wieder, was
+  zu einer super-linearen Laufzeit fuehrt.
+
+  Ausserdem evaluieren wir zu viel. Das Einsetzen von Variablen in Ausdruecken
+  die eventuell nie evaluiert werden ist verschwenderisch.
+
+** Herauszoegern des Einsetzungsprozesses durch Environments
+
+Statt in der Evaluation Ausdruecke direkt auf Ausdruecke abzubilden,
+sagen wir, dass wir einen Ausdruck in einem Environment evaluieren.
+
+oldEval : (Expression) -> Expression
+
+newEval : (Env, Expression) -> Expression
+
+Ein Environment ist eine Map die Variablennamen auf Ausdruecke abbildet.
+
+(Sehen wir gleich am Whiteboard)
+
+** Plan fuer heute
+
+- Evaluation mittels Closures
+- If-Statements und Booleans
+- Die Y und Z Kombinatoren
+- Konkrete Syntax (wenn wir Zeit haben)
