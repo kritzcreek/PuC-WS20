@@ -38,7 +38,6 @@ selber referenzieren.
 Durch _Fixpunkt Kombinatoren_ wie dem Y und Z Kombinator, koennen wir jedoch Rekursion
 selbst implementieren. Dies macht den Lambda Calculus Turing-vollstaendig.
 
-
 Uebung: Fibonacci Sequenz
 * Konkrete Syntax
 

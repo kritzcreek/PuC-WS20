@@ -95,8 +95,6 @@ fun eval(env: Env, expr: Expr): Expr {
 fun kotlinFaculty(x: Int): Int =
     if (x == 0) 1 else x * kotlinFaculty(x - 1)
 
-
-
 fun main() {
 
     fun binary(op: String, x: Expr, y: Expr): Expr =
@@ -108,7 +106,6 @@ fun main() {
     val elseBranch = Expr.Number(84)
     // println(eval(initialEnv, Expr.If(conditionNumber, thenBranch, elseBranch))) // 30
 
-    println(kotlinFaculty(5))
 
     val innerZ = Expr.Lambda(
         "x",
@@ -150,6 +147,7 @@ fun main() {
             )
         )
 
+    println(kotlinFaculty(5))
     println(eval(initialEnv, Expr.Application(Expr.Application(z, faculty), Expr.Number(5))))
 
     // fib 0 = 1
