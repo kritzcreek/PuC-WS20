@@ -109,6 +109,9 @@ fun eval(env: Env, expr: Expr): Expr {
 fun kotlinFaculty(x: Int): Int =
     if (x == 0) 1 else x * kotlinFaculty(x - 1)
 
+fun kotlinFib(x: Int): Int =
+        if (x <= 1) 1 else kotlinFib(x-1) + kotlinFib(x-2)
+
 fun main() {
 
     fun binary(op: String, x: Expr, y: Expr): Expr =
@@ -168,4 +171,47 @@ fun main() {
     // fib 1 = 1
     // fib n = fib (n - 1) + fib (n - 2)
     // Uebung bis zum naechsten mal! (Ihr braucht wieder Z)
+
+    val fib =
+        Expr.Lambda(
+            "fib",
+            Expr.Lambda
+            (
+                "x",
+                Expr.If
+                (
+                    binary("equals", Expr.Var("x"), Expr.Number(0)),
+                    Expr.Number(1),
+                    Expr.If
+                    (
+                        binary("equals", Expr.Var("x"), Expr.Number(1)),
+                        Expr.Number(1),
+                        binary(
+                            "add",
+                            Expr.Application(
+                                    Expr.Var("fib"),
+                                    binary(
+                                        "add",
+                                        Expr.Var("x"),
+                                        Expr.Number(-1)
+                                    )
+                            ),
+                            Expr.Application(
+                                    Expr.Var("fib"),
+                                    binary(
+                                        "add",
+                                        Expr.Var("x"),
+                                        Expr.Number(-2)
+                                    )
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+    val testNumber = 10
+    val fibResult = eval(initialEnv, Expr.Application(Expr.Application(z, fib), Expr.Number(testNumber)))
+    val fibResultKotlin = kotlinFib(testNumber)
+    println("$fibResult == $fibResultKotlin")
 }
