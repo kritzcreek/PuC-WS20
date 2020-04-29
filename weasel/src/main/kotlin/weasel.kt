@@ -20,6 +20,11 @@ val initialEnv: Env = persistentHashMapOf(
         Expr.Lambda("y", Expr.Var("#add")),
         emptyEnv
     ),
+    "subtract" to Expr.Closure(
+        "x",
+        Expr.Lambda("y", Expr.Var("#subtract")),
+        emptyEnv
+    ),
     "multiply" to Expr.Closure(
         "x",
         Expr.Lambda("y", Expr.Var("#multiply")),
@@ -43,6 +48,15 @@ fun eval(env: Env, expr: Expr): Expr {
                     Expr.Number(summand1.number + summand2.number)
                 } else {
                     throw Exception("Can't add $summand1 to $summand2")
+                }
+            }
+            "#subtract" -> {
+                val x = env["x"]!!
+                val y = env["y"]!!
+                if (x is Expr.Number && y is Expr.Number) {
+                    Expr.Number(x.number - y.number)
+                } else {
+                    throw Exception("Can't subtract $y from $x")
                 }
             }
             "#multiply" -> {

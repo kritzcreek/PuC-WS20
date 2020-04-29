@@ -33,10 +33,13 @@ class Peekable<T>(val iterator: Iterator<T>) {
     fun peek(): T? = next().also { lookahead = it }
 }
 
-class Lexer(val input: String) {
-    val chars = Peekable(input.iterator())
+class Lexer(input: String) {
+    private val chars = Peekable(input.iterator())
+    private var lookahead: Token? = null
 
+    fun peek(): Token = next().also { lookahead = it }
     fun next(): Token {
+        lookahead?.let { lookahead = null; return it }
         consumeWhitespace()
         val c = chars.next() ?: return Token.END_OF_FILE
         return when(c) {
@@ -84,4 +87,8 @@ fun main() {
     """.trimIndent()
     val lexer = Lexer(input)
     while(lexer.next().also(::println) !is Token.END_OF_FILE) {}
+
+    /// Uebung: Kommentare als Whitespace lexed
+    // Kommentar Syntax: // Hello\n
+    // Tipp: / <- kann keine andere tokens starten
 }
