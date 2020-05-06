@@ -10,6 +10,7 @@ sealed class Token {
     object RIGHT_PAREN: Token()
     object LAMBDA: Token()
     object RIGHT_ARROW: Token()
+    data class OPERATOR(val operator: String): Token()
 
     // Idents
     data class IDENT(val ident: String): Token()
@@ -45,9 +46,12 @@ class Lexer(input: String) {
         return when(c) {
             '(' -> Token.LEFT_PAREN
             ')' -> Token.RIGHT_PAREN
+            '+' -> Token.OPERATOR("+")
+            '*' -> Token.OPERATOR("*")
             '\\' -> Token.LAMBDA
-            '-' -> if(chars.next() == '>') Token.RIGHT_ARROW else throw Exception("Unclosed arrow token")
             '/' -> if(chars.next()=='/') comment() else throw Exception("Expected seccond '/")
+            '-' -> if(chars.next() == '>') Token.RIGHT_ARROW else Token.OPERATOR("-")
+            '=' -> if(chars.next() == '=') Token.OPERATOR("==") else throw Exception("Unclosed equals-equals token")
             else -> when {
                 c.isJavaIdentifierStart() -> ident(c)
                 c.isDigit() -> number(c)
@@ -97,7 +101,7 @@ fun main() {
     val lexer = Lexer(input)
     while(lexer.next().also(::println) !is Token.END_OF_FILE) {}
 
-    /// Uebung: Kommentare als Whitespace lexed
+    /// Uebung: Kommentare als Whitespace lexen
     // Kommentar Syntax: // Hello\n
     // Tipp: / <- kann keine andere tokens starten
 }

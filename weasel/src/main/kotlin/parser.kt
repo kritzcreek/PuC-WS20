@@ -1,6 +1,40 @@
 class Parser(val tokens: Lexer) {
 
-    fun parseExpression(): Expr {
+    fun parseExpression() = parseOperatorExpression(0)
+
+    private fun parseOperatorExpression(minBindingPower: Int): Expr {
+        var leftHandSide = parseApplication()
+        loop@ while (true) {
+            val operator = when(val op = tokens.peek()) {
+                is Token.OPERATOR -> op.operator
+                else -> break@loop
+            }
+            val fn = functionForOperator(operator)
+            val (leftBP, rightBP) = bindingPowerForOperator(operator)
+            if (leftBP < minBindingPower) break
+            expectNext<Token.OPERATOR>("operator")
+            val rightHandSide = parseOperatorExpression(rightBP)
+            leftHandSide = Expr.Application(Expr.Application(fn, leftHandSide), rightHandSide)
+        }
+        return leftHandSide
+    }
+
+    private fun functionForOperator(operator: String): Expr = when(operator) {
+        "+" -> Expr.Var("add")
+        "-" -> Expr.Var("subtract")
+        "*" -> Expr.Var("multiply")
+        "==" -> Expr.Var("equals")
+        else -> throw Exception("Unknown operator $operator")
+    }
+
+    private fun bindingPowerForOperator(operator: String): Pair<Int, Int> = when(operator) {
+        "==" -> 1 to 2
+        "+", "-" -> 2 to 3
+        "*" -> 3 to 4
+        else -> throw Exception("Unknown operator $operator")
+    }
+
+    private fun parseApplication(): Expr {
         val atoms = mutableListOf<Expr>()
         while (true) {
             val atom = parseAtom() ?: break
@@ -15,7 +49,7 @@ class Parser(val tokens: Lexer) {
         }
     }
 
-    fun parseAtom(): Expr? = when (val t = tokens.peek()) {
+    private fun parseAtom(): Expr? = when (tokens.peek()) {
         is Token.NUMBER -> number()
         is Token.BOOLEAN -> boolean()
         is Token.IDENT -> ident()
@@ -77,9 +111,9 @@ class Parser(val tokens: Lexer) {
 
 fun main() {
     val input = """
-        if (\x1 -> equals 20 x1) 25
+        if (\x1 -> 20 == x1) 25
         then true
-        else add 3 (multiply 4 5)
+        else 3 + 4 * 5
     """.trimIndent()
 
     val lexer = Lexer(input)
@@ -96,10 +130,10 @@ fun main() {
 
     val z = parseExpr("""\f -> (\x -> f \v -> x x v) (\x -> f \v -> x x v)""")
     val faculty = parseExpr("""
-        \fac -> \x -> 
-            if equals x 0
+        \fac -> \x ->
+            if x == 0
             then 1
-            else multiply x (fac (subtract x 1))
+            else x * fac (x - 1)
     """.trimIndent())
 
     println(eval(initialEnv, Expr.Application(Expr.Application(z, faculty), Expr.Number(5))))
