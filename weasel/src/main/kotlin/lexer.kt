@@ -47,6 +47,7 @@ class Lexer(input: String) {
             ')' -> Token.RIGHT_PAREN
             '\\' -> Token.LAMBDA
             '-' -> if(chars.next() == '>') Token.RIGHT_ARROW else throw Exception("Unclosed arrow token")
+            '/' -> if(chars.next()=='/') comment() else throw Exception("Expected seccond '/")
             else -> when {
                 c.isJavaIdentifierStart() -> ident(c)
                 c.isDigit() -> number(c)
@@ -59,6 +60,14 @@ class Lexer(input: String) {
         var res = c.toString()
         while (chars.peek()?.isDigit() == true) res += chars.next()
         return Token.NUMBER(res.toInt())
+    }
+    private fun comment():Token {
+        var c = chars.peek()
+        while (true){
+            if (c == '\n') break
+            c = chars.next()
+        }
+        return next()
     }
 
     private fun ident(c: Char): Token {
@@ -81,7 +90,7 @@ class Lexer(input: String) {
 
 fun main() {
     val input = """
-        if (\x1 -> equals 20 x1) 25
+        if (\x1 -> equals 20 x1) 25 // Kommentar
         then true
         else add 3 (multiply 4 5)
     """.trimIndent()
