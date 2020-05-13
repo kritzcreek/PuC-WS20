@@ -1,0 +1,69 @@
+* Herzlich Willkommen
+
+Bitte an die Kameras denken
+
+Aufnahme starten
+* Gradle
+
+Aufsetzen unseres Projektes
+
+Vorraussetzungen: Git + IntelliJ
+
+* Wiederholung
+
+** Was sind Typen?
+
+- Typen beschreiben Werte/Ausdruecke
+- Typen bilden Kategorien
+- Es gibt _primitive_ Typen: Number, Boolean
+
+Notation:
+Wir schreiben "Ausdruck e hat den Typ t" als:
+
+ e : t
+
+** Praeservation
+
+Ein Ausdruck veraendert seinen Typ nicht wenn wir ihn evaluieren.
+
+3 + 4 = 7
+
+7 hat den Typ Number, sodass auch 3 + 4 den Typ Number hat.
+
+(\x -> if x then 1 else true) ist in unserer Sprache kein typbarer Wert.
+
+** Praezedenz des Funktionspfeils
+
+Number
+Boolean
+
+Number -> Number
+
+x : Number -> (Number -> Number)
+x = \a -> (\b -> a + b)
+
+y : (Number -> Number) -> Number
+y = \a -> a 10
+** Typ Quiz
+
+
+* Typinferenz
+
+"Typinferenz beschreibt die automatische Detektion des Typen eines
+Ausdrucks in einer Programmiersprache"
+
+- Programmiersprache
+- Ausdruck
+- Typ
+
+- _Detektion_
+
+* Uebung fuers naechste Mal
+
+Parser fuer Typen
+
+"Number"
+"Boolean"
+"Number -> Number"
+"Number -> Number -> Number"
+"(Number -> Number) -> Number"
