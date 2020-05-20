@@ -6,9 +6,10 @@ sealed class Expr {
     data class Boolean(val bool: kotlin.Boolean) : Expr()
     data class Var(val name: String) : Expr()
     data class Lambda(val binder: String, val body: Expr) : Expr()
-    data class Closure(val binder: String, val body: Expr, val env: Env) : Expr()
+    data class Closure(val binder: String, val body: Expr, var env: Env) : Expr()
     data class Application(val func: Expr, val argument: Expr) : Expr()
     data class If(val condition: Expr, val thenBranch: Expr, val elseBranch: Expr) : Expr()
+    data class Let(val isRecursive: kotlin.Boolean, val binder: String, val expr: Expr, val body: Expr) : Expr()
 }
 
 typealias Env = PersistentMap<String, Expr>
@@ -102,7 +103,18 @@ fun eval(env: Env, expr: Expr): Expr {
             }
 
         }
-
+        is Expr.Let -> {
+            val evaledExpr = eval(env, expr.expr)
+            when(evaledExpr) {
+                is Expr.Closure -> {
+                    if (expr.isRecursive) {
+                        evaledExpr.env = evaledExpr.env.put(expr.binder, evaledExpr)
+                    }
+                    eval(env.put(expr.binder, evaledExpr), expr.body)
+                }
+                else -> eval(env.put(expr.binder, evaledExpr), expr.body)
+            }
+        }
     }
 }
 
@@ -214,4 +226,13 @@ fun main() {
     val fibResult = eval(initialEnv, Expr.Application(Expr.Application(z, fib), Expr.Number(testNumber)))
     val fibResultKotlin = kotlinFib(testNumber)
     println("$fibResult == $fibResultKotlin")
+
+    val letExpr = Parser(Lexer("""
+        let identity = \x -> x in
+        let x = identity 10 in
+        let y = identity true in
+        if y then x else 20
+        """.trimIndent())).parseExpression()
+    val letResult = eval(initialEnv, letExpr)
+    println(letResult)
 }

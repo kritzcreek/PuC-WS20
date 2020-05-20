@@ -4,12 +4,17 @@ sealed class Token {
     object IF: Token()
     object THEN: Token()
     object ELSE: Token()
+    object LET: Token()
+    object REC: Token()
+    object IN: Token()
+
 
     // Symbols
     object LEFT_PAREN: Token()
     object RIGHT_PAREN: Token()
     object LAMBDA: Token()
     object RIGHT_ARROW: Token()
+    object EQUALS: Token()
     data class OPERATOR(val operator: String): Token()
 
     // Idents
@@ -51,7 +56,7 @@ class Lexer(input: String) {
             '\\' -> Token.LAMBDA
             '/' -> if(chars.next()=='/') comment() else throw Exception("Expected seccond '/")
             '-' -> if(chars.next() == '>') Token.RIGHT_ARROW else Token.OPERATOR("-")
-            '=' -> if(chars.next() == '=') Token.OPERATOR("==") else throw Exception("Unclosed equals-equals token")
+            '=' -> if(chars.next() == '=') Token.OPERATOR("==") else Token.EQUALS
             else -> when {
                 c.isJavaIdentifierStart() -> ident(c)
                 c.isDigit() -> number(c)
@@ -81,6 +86,9 @@ class Lexer(input: String) {
             "if" -> Token.IF
             "then" -> Token.THEN
             "else" -> Token.ELSE
+            "let" -> Token.LET
+            "rec" -> Token.REC
+            "in" -> Token.IN
             "true" -> Token.BOOLEAN(true)
             "false" -> Token.BOOLEAN(false)
             else -> Token.IDENT(res)

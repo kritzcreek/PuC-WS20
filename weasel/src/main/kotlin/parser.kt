@@ -56,7 +56,23 @@ class Parser(val tokens: Lexer) {
         is Token.LEFT_PAREN -> parenthesized()
         is Token.LAMBDA -> lambda()
         is Token.IF -> ifExpression()
+        is Token.LET -> letExpression()
         else -> null
+    }
+
+    private fun letExpression(): Expr {
+        expectNext<Token.LET>("let")
+        var isRecursive = false
+        if (tokens.peek() is Token.REC) {
+            expectNext<Token.REC>("rec")
+            isRecursive = true
+        }
+        val binder = expectNext<Token.IDENT>("binder").ident
+        expectNext<Token.EQUALS>("equals")
+        val expr = parseExpression()
+        expectNext<Token.IN>("in")
+        val body = parseExpression()
+        return Expr.Let(isRecursive, binder, expr, body)
     }
 
     private fun ifExpression(): Expr.If {
@@ -111,9 +127,10 @@ class Parser(val tokens: Lexer) {
 
 fun main() {
     val input = """
-        if (\x1 -> 20 == x1) 25
-        then true
-        else 3 + 4 * 5
+        let x =
+          let y = 10 in
+          y + 11 in
+        x + x
     """.trimIndent()
 
     val lexer = Lexer(input)

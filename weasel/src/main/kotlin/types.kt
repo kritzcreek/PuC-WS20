@@ -57,13 +57,8 @@ fun applySolution(type: Type): Type = when(type){
 }
 
 fun unify(t1: Type, t2: Type) {
-    printSolution()
-    println("Before: ${t1.pretty()} ${t2.pretty()}")
-
     val t1 = applySolution(t1)
     val t2 = applySolution(t2)
-
-    println("After: ${t1.pretty()} ${t2.pretty()}")
 
     when {
         t1 == t2 -> return
@@ -127,6 +122,19 @@ fun infer(ctx: Context, expr: Expr): Type {
             unify(tyFun, Type.Function(tyArg, tyRes))
             tyRes
         }
+        is Expr.Let -> {
+            val newCtx = if (expr.isRecursive) {
+                val tyBinder = freshUnknown()
+                val innerCtx = ctx.put(expr.binder, tyBinder)
+                val inferredBinder = infer(innerCtx, expr.expr)
+                unify(tyBinder, inferredBinder)
+                innerCtx
+            } else {
+                val tyBinder = infer(ctx, expr.expr)
+                ctx.put(expr.binder, tyBinder)
+            }
+            infer(newCtx, expr.body)
+        }
         is Expr.Closure -> TODO()
     }
 }
@@ -141,16 +149,24 @@ fun main() {
         println(expr + " : ${applySolution(ty).pretty()}")
     }
 
-//    testInfer("""12""")
-//    testInfer("""true""")
-//    testInfer("""add""")
-//    testInfer("""\x -> 10""")
-//    testInfer("""\x -> \y -> x""")
-//    testInfer("""\x -> \y -> y""")
-//    testInfer("""if true then 1 else 0""")
-//    testInfer("""\x -> if x then 1 else 0""")
-    testInfer("""(\x -> x)""")
-//    testInfer("""(\y -> y) (\x -> x) 10""")
-//    testInfer("""\f -> (\x -> f \v -> x x v) (\x -> f \v -> x x v)""".trimIndent())
+
+    testInfer("""let x = 42 in true""")
+    val h20 = """
+        let rec fak = \x -> 
+            if x == 0 
+                then 1 
+                else x * fak (x - 1) in
+        fak 5
+    """.trimIndent()
+    testInfer(h20)
+
+    val next = """
+        let identity = \x -> x in
+        let x = identity 10 in
+        let y = identity true in
+        if y then x else 20
+    """.trimIndent()
+    testInfer(next)
+
     // printSolution()
 }
