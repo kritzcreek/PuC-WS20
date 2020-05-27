@@ -1,5 +1,6 @@
 sealed class Token {
     override fun toString(): String = javaClass.simpleName
+
     // Keywords
     object IF: Token()
     object THEN: Token()
@@ -23,6 +24,9 @@ sealed class Token {
     // Literals
     data class BOOLEAN(val boolean: Boolean): Token()
     data class NUMBER(val number: Int): Token()
+
+    // Types
+    data class PRIMITIVE_TYPE(val type: Type): Token()
 
     // EOF
     object END_OF_FILE: Token()
@@ -91,6 +95,8 @@ class Lexer(input: String) {
             "in" -> Token.IN
             "true" -> Token.BOOLEAN(true)
             "false" -> Token.BOOLEAN(false)
+            "Number" -> Token.PRIMITIVE_TYPE(Type.Number)
+            "Boolean" -> Token.PRIMITIVE_TYPE(Type.Boolean)
             else -> Token.IDENT(res)
         }
     }

@@ -2,6 +2,12 @@ class Parser(val tokens: Lexer) {
 
     fun parseExpression() = parseOperatorExpression(0)
 
+    fun parseType(): Type {
+        val type = type()
+        expectNext<Token.END_OF_FILE>("EOF")
+        return type
+    }
+
     private fun parseOperatorExpression(minBindingPower: Int): Expr {
         var leftHandSide = parseApplication()
         loop@ while (true) {
@@ -115,6 +121,30 @@ class Parser(val tokens: Lexer) {
         return Expr.Number(number)
     }
 
+    private fun type(): Type {
+        val leftType = when (val peek = tokens.peek()) {
+            is Token.PRIMITIVE_TYPE -> {
+                val primitive = expectNext<Token.PRIMITIVE_TYPE>("primitive")
+                primitive.type
+            }
+            Token.LEFT_PAREN -> {
+                expectNext<Token.LEFT_PAREN>("left parenthesis")
+                val innerType = type()
+                expectNext<Token.RIGHT_PAREN>("right parenthesis")
+                innerType
+            }
+            else -> throw Exception("expected primitive or open parenthesis, but saw $peek")
+        }
+
+        if (tokens.peek() == Token.RIGHT_ARROW) {
+            expectNext<Token.RIGHT_ARROW>("right arrow")
+            val rightType = type()
+            return Type.Function(leftType, rightType)
+        }
+
+        return leftType
+    }
+
     private inline fun <reified T> expectNext(msg: String): T {
         val next = tokens.next()
         if (next is T) {
@@ -154,4 +184,10 @@ fun main() {
     """.trimIndent())
 
     println(eval(initialEnv, Expr.Application(Expr.Application(z, faculty), Expr.Number(5))))
+
+    // parse einen Typen
+    val typeParser = Parser(Lexer(("((Boolean -> Number) -> Boolean) -> (Number -> (Number -> Boolean) -> Number) -> (Boolean)")))
+    println()
+    println("Parsed Type\n=======")
+    println(typeParser.parseType().pretty())
 }
