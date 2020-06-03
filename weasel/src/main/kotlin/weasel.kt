@@ -10,6 +10,7 @@ sealed class Expr {
     data class Application(val func: Expr, val argument: Expr) : Expr()
     data class If(val condition: Expr, val thenBranch: Expr, val elseBranch: Expr) : Expr()
     data class Let(val isRecursive: kotlin.Boolean, val binder: String, val expr: Expr, val body: Expr) : Expr()
+    data class LinkedList(val values: List<Expr>) : Expr()
 }
 
 typealias Env = PersistentMap<String, Expr>
@@ -34,6 +35,27 @@ val initialEnv: Env = persistentHashMapOf(
     "equals" to Expr.Closure(
         "x",
         Expr.Lambda("y", Expr.Var("#equals")),
+        emptyEnv
+    ),
+    "nil" to Expr.LinkedList(listOf()),
+    "cons" to Expr.Closure(
+        "x",
+        Expr.Lambda("y", Expr.Var("#cons")),
+        emptyEnv
+    ),
+    "isEmpty" to Expr.Closure(
+        "x",
+        Expr.Var("#isEmpty"),
+        emptyEnv
+    ),
+    "head" to Expr.Closure(
+        "x",
+        Expr.Var("#head"),
+        emptyEnv
+    ),
+    "tail" to Expr.Closure(
+        "x",
+        Expr.Var("#tail"),
         emptyEnv
     )
 )
@@ -80,6 +102,39 @@ fun eval(env: Env, expr: Expr): Expr {
                     throw Exception("Can't compare $x to $y for equality")
                 }
             }
+            "#cons" -> {
+                val x = env["x"]!!
+                val y = env["y"]!!
+                if (y is Expr.LinkedList) {
+                    Expr.LinkedList(listOf(x) + y.values)
+                } else {
+                    throw Exception("$y is not a list")
+                }
+            }
+            "#head" -> {
+                val x = env["x"]!!
+                if (x is Expr.LinkedList && x.values.isNotEmpty()) {
+                    x.values[0]
+                } else {
+                    throw Exception("$x is not a list or was empty")
+                }
+            }
+            "#tail" -> {
+                val x = env["x"]!!
+                if (x is Expr.LinkedList && x.values.isNotEmpty()) {
+                    Expr.LinkedList(x.values.drop(1))
+                } else {
+                    throw Exception("$x is not a list or was empty")
+                }
+            }
+            "#isEmpty" -> {
+                val x = env["x"]!!
+                if (x is Expr.LinkedList) {
+                    Expr.Boolean(x.values.isEmpty())
+                } else {
+                    throw Exception("$x is not a list")
+                }
+            }
             else -> env[expr.name] ?: throw Exception("${expr.name} was undefined.")
         }
         is Expr.Lambda -> Expr.Closure(expr.binder, expr.body, env)
@@ -105,7 +160,7 @@ fun eval(env: Env, expr: Expr): Expr {
         }
         is Expr.Let -> {
             val evaledExpr = eval(env, expr.expr)
-            when(evaledExpr) {
+            when (evaledExpr) {
                 is Expr.Closure -> {
                     if (expr.isRecursive) {
                         evaledExpr.env = evaledExpr.env.put(expr.binder, evaledExpr)
@@ -115,6 +170,7 @@ fun eval(env: Env, expr: Expr): Expr {
                 else -> eval(env.put(expr.binder, evaledExpr), expr.body)
             }
         }
+        is Expr.LinkedList -> Expr.LinkedList(expr.values.map { eval(env, it) })
     }
 }
 
@@ -122,7 +178,7 @@ fun kotlinFaculty(x: Int): Int =
     if (x == 0) 1 else x * kotlinFaculty(x - 1)
 
 fun kotlinFib(x: Int): Int =
-        if (x <= 1) 1 else kotlinFib(x-1) + kotlinFib(x-2)
+    if (x <= 1) 1 else kotlinFib(x - 1) + kotlinFib(x - 2)
 
 fun main() {
 
@@ -188,33 +244,33 @@ fun main() {
         Expr.Lambda(
             "fib",
             Expr.Lambda
-            (
+                (
                 "x",
                 Expr.If
-                (
+                    (
                     binary("equals", Expr.Var("x"), Expr.Number(0)),
                     Expr.Number(1),
                     Expr.If
-                    (
+                        (
                         binary("equals", Expr.Var("x"), Expr.Number(1)),
                         Expr.Number(1),
                         binary(
                             "add",
                             Expr.Application(
-                                    Expr.Var("fib"),
-                                    binary(
-                                        "add",
-                                        Expr.Var("x"),
-                                        Expr.Number(-1)
-                                    )
+                                Expr.Var("fib"),
+                                binary(
+                                    "add",
+                                    Expr.Var("x"),
+                                    Expr.Number(-1)
+                                )
                             ),
                             Expr.Application(
-                                    Expr.Var("fib"),
-                                    binary(
-                                        "add",
-                                        Expr.Var("x"),
-                                        Expr.Number(-2)
-                                    )
+                                Expr.Var("fib"),
+                                binary(
+                                    "add",
+                                    Expr.Var("x"),
+                                    Expr.Number(-2)
+                                )
                             )
                         )
                     )
@@ -227,12 +283,29 @@ fun main() {
     val fibResultKotlin = kotlinFib(testNumber)
     println("$fibResult == $fibResultKotlin")
 
-    val letExpr = Parser(Lexer("""
+    val letExpr = Parser(
+        Lexer(
+            """
         let identity = \x -> x in
         let x = identity 10 in
         let y = identity true in
         if y then x else 20
-        """.trimIndent())).parseExpression()
+        """.trimIndent()
+        )
+    ).parseExpression()
     val letResult = eval(initialEnv, letExpr)
     println(letResult)
+
+    val listExpr = Parser(
+        Lexer(
+            """
+        let empty = nil in
+        let listOne = cons (10 + 20) empty in
+        let listTwo = cons (20 - 10) listOne in
+        head listTwo
+        """.trimIndent()
+        )
+    ).parseExpression()
+    val listResult = eval(initialEnv, listExpr)
+    println(listResult)
 }

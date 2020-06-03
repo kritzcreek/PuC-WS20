@@ -1,3 +1,5 @@
+import kotlin.math.exp
+
 class Parser(val tokens: Lexer) {
 
     fun parseExpression() = parseOperatorExpression(0)
@@ -5,7 +7,7 @@ class Parser(val tokens: Lexer) {
     private fun parseOperatorExpression(minBindingPower: Int): Expr {
         var leftHandSide = parseApplication()
         loop@ while (true) {
-            val operator = when(val op = tokens.peek()) {
+            val operator = when (val op = tokens.peek()) {
                 is Token.OPERATOR -> op.operator
                 else -> break@loop
             }
@@ -19,7 +21,7 @@ class Parser(val tokens: Lexer) {
         return leftHandSide
     }
 
-    private fun functionForOperator(operator: String): Expr = when(operator) {
+    private fun functionForOperator(operator: String): Expr = when (operator) {
         "+" -> Expr.Var("add")
         "-" -> Expr.Var("subtract")
         "*" -> Expr.Var("multiply")
@@ -27,7 +29,7 @@ class Parser(val tokens: Lexer) {
         else -> throw Exception("Unknown operator $operator")
     }
 
-    private fun bindingPowerForOperator(operator: String): Pair<Int, Int> = when(operator) {
+    private fun bindingPowerForOperator(operator: String): Pair<Int, Int> = when (operator) {
         "==" -> 1 to 2
         "+", "-" -> 2 to 3
         "*" -> 3 to 4
@@ -57,7 +59,22 @@ class Parser(val tokens: Lexer) {
         is Token.LAMBDA -> lambda()
         is Token.IF -> ifExpression()
         is Token.LET -> letExpression()
+        is Token.LEFT_BRACKET -> listExpression()
         else -> null
+    }
+
+    private fun listExpression(): Expr {
+        val values = mutableListOf<Expr>()
+        expectNext<Token.LEFT_BRACKET>("left bracket")
+        if (tokens.peek() !is Token.RIGHT_BRACKET) {
+            values += parseExpression()
+            while (tokens.peek() is Token.COMMA) {
+                expectNext<Token.COMMA>("comma")
+                values += parseExpression()
+            }
+        }
+        expectNext<Token.RIGHT_BRACKET>("right bracket")
+        return Expr.LinkedList(values)
     }
 
     private fun letExpression(): Expr {
@@ -146,12 +163,14 @@ fun main() {
     fun parseExpr(s: String) = Parser(Lexer(s)).parseExpression()
 
     val z = parseExpr("""\f -> (\x -> f \v -> x x v) (\x -> f \v -> x x v)""")
-    val faculty = parseExpr("""
+    val faculty = parseExpr(
+        """
         \fac -> \x ->
             if x == 0
             then 1
             else x * fac (x - 1)
-    """.trimIndent())
+    """.trimIndent()
+    )
 
     println(eval(initialEnv, Expr.Application(Expr.Application(z, faculty), Expr.Number(5))))
 }

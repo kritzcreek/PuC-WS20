@@ -8,11 +8,13 @@ sealed class Token {
     object REC: Token()
     object IN: Token()
 
-
     // Symbols
     object LEFT_PAREN: Token()
     object RIGHT_PAREN: Token()
+    object LEFT_BRACKET: Token()
+    object RIGHT_BRACKET: Token()
     object LAMBDA: Token()
+    object COMMA: Token()
     object RIGHT_ARROW: Token()
     object EQUALS: Token()
     data class OPERATOR(val operator: String): Token()
@@ -51,6 +53,9 @@ class Lexer(input: String) {
         return when(c) {
             '(' -> Token.LEFT_PAREN
             ')' -> Token.RIGHT_PAREN
+            '[' -> Token.LEFT_BRACKET
+            ']' -> Token.RIGHT_BRACKET
+            ',' -> Token.COMMA
             '+' -> Token.OPERATOR("+")
             '*' -> Token.OPERATOR("*")
             '\\' -> Token.LAMBDA

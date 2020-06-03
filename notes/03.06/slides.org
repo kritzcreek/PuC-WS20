@@ -1,0 +1,50 @@
+* Herzlich Willkommen
+
+Bitte an die Kameras denken
+
+Aufnahme starten
+
+* Wiederholung
+
+** Parametrischer Polymorphismus
+
+Um Ausdruecken in unserer Sprache Ausdrucksstaerkere, polymorphe Typen
+geben zu koennen, haben wir unser Typsystem mit Polytypen erweitert.
+
+Ein Polytyp beinhaltet Typvariablen die wir explicit mit einem
+`forall` binden.
+
+Beispiele:
+
+\x -> x         : forall a. a -> a
+\x -> \y -> x   : forall a b. a -> b -> a
+\f -> \x -> f x : forall a b. (a -> b) -> a -> b
+
+** Generalization and Instantiation
+
+In unserem Typechecker wird dieser Polymorphismus durch das
+Zusammenspiel von Generalisierung bei Let-bindings und Instantiierung
+bei Variablen implementiert.
+
+Beispiele:
+
+let id = \x -> x in
+id 10
+
+infer => \x -> x : u1 -> u1
+generalize => id : forall a. a -> a
+infer => { id : forall a. a -> a} |- id 10
+instantiate => (id : u2 -> u2) 10
+unify => Number
+
+** Fragen zur Wiederholung
+
+* Plan fuer Heute
+
+- Listen als Primitive implementieren
+- Ein bisschen in unserer Programmiersprache programmieren
+- Projekte verteilen und finalisieren
+
+** Projekte
+
+   22.07/29.07 Vorstellungstermine
